@@ -29,44 +29,37 @@ const ll M =1e9+7;
 const ll nax=5e3+69;
 const ll inf=9e18+69;
 using pii = pair<ll,ll>; 
-struct Project
-{
-	int st,end,val;
-};
-bool cmp(Project &p1,Project &p2){
-	return p1.end < p2.end;
-}
 int n;
-ll bin_search(ll val, vector<ll> &endpts){
-	auto it = lower_bound(endpts.begin()+1, endpts.end(),val);
-	if(it == endpts.end())
-		return 0;
-	else{
-		return distance(endpts.begin()+1,it);
-	}
-}
+vector<pair<ll,pii> > v;
+vector<ll> finish,dp;
 void solve(){
 	int x,y,z;
 	cin>>n;
-	vector<Project> v(n+1);
-	vector<ll> dp(n+1,0);
-	vector<ll> endpts(n+1);
+	v.resize(n+1);
+	finish.resize(n+1);
+	dp.resize(n+1);
 	for (int i = 1; i <= n; ++i)
 	{
-		cin>>v[i].st>>v[i].end>>v[i].val;
+		cin>>v[i].second.first>>v[i].first>>v[i].second.second;
 	}
-	sort(v.begin()+1, v.end(),cmp);
+	sort(v.begin()+1, v.end());
 	for (int i = 1; i <= n; ++i)
 	{
-		endpts[i]=v[i].end;
+		finish[i]=v[i].first;
 	}
 	dp[0]=0;
 	for (int i = 1; i <= n; ++i)
 	{
-		ll ind = bin_search(v[i].st,endpts);
-		//if()
-		dp[i] = max(dp[i-1], v[i].val + dp[ind]);
-		//cout<<i<<' '<<ind<<' '<<dp[i]<<endl;
+		auto it = lower_bound(finish.begin()+1,finish.end(),v[i].second.first);
+		ll ind = -1;
+		if(it==finish.end())
+			ind = 0;
+		else{
+			--it;
+			ind = distance(finish.begin()+1,it)+1;
+		}
+		dp[i] = max(dp[i-1],dp[ind]+v[i].second.second);
+		//cout<<dp[i]<<' '<<ind<<endl;
 	}
 	cout<<dp[n]<<endl;
 }
